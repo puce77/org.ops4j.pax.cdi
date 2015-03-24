@@ -32,7 +32,9 @@
         <module>pax-cdi-samples</module>
         <module>pax-cdi-extension</module>
         <module>pax-cdi-api</module>
+        <module>pax-cdi-weld-core</module>
         <module>pax-cdi-weld</module>
+        <module>pax-cdi-weld-se</module>
         <module>pax-cdi-web</module>
         <module>pax-cdi-web-weld</module>
         <module>pax-cdi-web-openwebbeans</module>

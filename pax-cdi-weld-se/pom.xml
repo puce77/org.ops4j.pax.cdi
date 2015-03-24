@@ -4,17 +4,17 @@
         <groupId>org.ops4j.pax.cdi</groupId>
         <version>1.0.0-SNAPSHOT</version>
         <artifactId>pax-cdi-parent</artifactId>
-        <relativePath>../pax-cdi-parent</relativePath>
+        <relativePath>../pax-cdi-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>pax-cdi-weld</artifactId>
+    <artifactId>pax-cdi-weld-se</artifactId>
     <packaging>bundle</packaging>
   
-    <name>OPS4J Pax CDI Weld Adapter</name>
+    <name>OPS4J Pax CDI Weld SE Adapter</name>
   
     <properties>
-        <bundle.symbolicName>org.ops4j.pax.cdi.weld</bundle.symbolicName>
-        <bundle.namespace>org.ops4j.pax.cdi.weld</bundle.namespace>
+        <bundle.symbolicName>org.ops4j.pax.cdi.weld.se</bundle.symbolicName>
+        <bundle.namespace>org.ops4j.pax.cdi.weld.se</bundle.namespace>
     </properties>
 
     <dependencies>
@@ -31,11 +31,12 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-        
+                
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>
             <artifactId>pax-swissbox-core</artifactId>
         </dependency>
+<!--
 
         <dependency>
             <groupId>org.jboss.weld</groupId>
@@ -46,29 +47,38 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-        </dependency>
+        </dependency>-->
 
         <dependency>
-            <groupId>org.jboss.weld</groupId>
-            <artifactId>weld-osgi-bundle</artifactId>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-osgi-bundle</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
+            <scope>provided</scope>
         </dependency>
+        <!--
         
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        -->        
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
             <scope>provided</scope>
-        </dependency>
+        </dependency><!--
 
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-atinject_1.0_spec</artifactId>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
         
     </dependencies>
 

@@ -27,7 +27,7 @@
         <pax.url.version>2.2.0</pax.url.version>
         <pax.web.version>4.0.0</pax.web.version>
         <slf4j.version>1.6.4</slf4j.version>
-        <weld2.version>2.2.9.Final</weld2.version>
+        <weld2.version>2.2.10-SNAPSHOT</weld2.version>
         <xbean.version>4.1</xbean.version>
 
         <pax.cdi.wiki.url>http://team.ops4j.org/wiki/display/paxcdi/</pax.cdi.wiki.url>
@@ -282,7 +282,13 @@
                 <artifactId>weld-osgi-bundle</artifactId>
                 <version>${weld2.version}</version>
             </dependency>
-
+            
+            <dependency>
+                <groupId>org.jboss.weld.se</groupId>
+                <artifactId>weld-se-osgi-bundle</artifactId>
+                <version>${weld2.version}</version>
+            </dependency>
+            
             <dependency>
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-utils</artifactId>
