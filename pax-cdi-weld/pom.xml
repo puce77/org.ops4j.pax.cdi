@@ -57,6 +57,11 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+            <scope>provided</scope>
+        </dependency>
         
         <dependency>
             <groupId>javax.enterprise</groupId>
@@ -69,7 +74,7 @@
             <artifactId>geronimo-atinject_1.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
     </dependencies>
 
     <build>

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.weld.impl;
+package org.ops4j.pax.cdi.weld.core.impl;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;

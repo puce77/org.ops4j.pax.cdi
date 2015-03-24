@@ -17,28 +17,15 @@
  */
 package org.ops4j.pax.cdi.weld.impl;
 
-import static org.ops4j.pax.swissbox.core.ContextClassLoaderUtils.doWithClassLoader;
-
-import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.Callable;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionTarget;
-
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
-import org.jboss.weld.manager.BeanManagerImpl;
-import org.ops4j.lang.Ops4jException;
-import org.ops4j.pax.cdi.spi.AbstractCdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
+import org.ops4j.pax.cdi.weld.core.AbstractWeldCdiContainer;
 import org.ops4j.pax.cdi.weld.impl.bda.BundleDeployment;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -46,142 +33,58 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link CdiContainer} implementation wrapping a JBoss Weld container, represented by a
- * {@link WeldBootstrap}.
- * 
+ * {@link CdiContainer} implementation wrapping a JBoss Weld container, represented by a {@link WeldBootstrap}.
+ *
  * @author Harald Wellmann
- * 
+ *
  */
-public class WeldCdiContainer extends AbstractCdiContainer {
+public class WeldCdiContainer extends AbstractWeldCdiContainer {
 
-    private Logger log = LoggerFactory.getLogger(WeldCdiContainer.class);
-
-    /**
-     * Helper for accessing Instance and Event of CDI container.
-     */
-    private InstanceManager instanceManager;
+    private final Logger log = LoggerFactory.getLogger(WeldCdiContainer.class);
 
     private WeldBootstrap bootstrap;
 
-    private BeanManagerImpl manager;
-
     /**
      * Construct a CDI container for the given extended bundle.
-     * 
-     * @param ownBundle
-     *            bundle containing this class
-     * @param bundle
-     *            bundle to be extended with CDI container
-     * @param extensionBundles
-     *            CDI extension bundles to be loaded by OpenWebBeans
+     *
+     * @param ownBundle bundle containing this class
+     * @param bundle bundle to be extended with CDI container
+     * @param extensionBundles CDI extension bundles to be loaded by OpenWebBeans
      */
     public WeldCdiContainer(CdiContainerType containerType, Bundle ownBundle, Bundle bundle,
-        Collection<Bundle> extensionBundles) {
+            Collection<Bundle> extensionBundles) {
         super(containerType, bundle, extensionBundles, Arrays.asList(ownBundle,
-            FrameworkUtil.getBundle(Bootstrap.class)));
+                FrameworkUtil.getBundle(Bootstrap.class)));
         log.debug("creating Weld CDI container for bundle {}", bundle);
     }
 
     @Override
-    protected void doStart(Object environment) {
-        buildContextClassLoader();
-        try {
-            doWithClassLoader(getContextClassLoader(), new Callable<BeanManager>() {
-
-                @Override
-                public BeanManager call() throws Exception {
-                    return createBeanManager();
-                }
-            });
-        }
-        // CHECKSTYLE:SKIP
-        catch (Exception exc) {
-            throw new Ops4jException(exc);
-        }
-    }
-    
-    private BeanManager createBeanManager() {
+    protected BeanManager createBeanManager(String contextId) {
         bootstrap = new WeldBootstrap();
         BundleDeployment deployment = new BundleDeployment(getBundle(), bootstrap, getContextClassLoader());
         BeanDeploymentArchive beanDeploymentArchive = deployment
-            .getBeanDeploymentArchive();
+                .getBeanDeploymentArchive();
 
-        String contextId = getBundle().getSymbolicName() + ":"
-            + getBundle().getBundleId();
         bootstrap.startContainer(contextId, OsgiEnvironment.getInstance(), deployment);
         bootstrap.startInitialization();
         bootstrap.deployBeans();
         bootstrap.validateBeans();
         bootstrap.endInitialization();
-        manager = bootstrap.getManager(beanDeploymentArchive);
-        return manager;        
+        return bootstrap.getManager(beanDeploymentArchive);
     }
 
     @Override
-    public void doStop() {
-        try {
-            doWithClassLoader(getContextClassLoader(), new Callable<Object>() {
-
-                @Override
-                public Object call() throws Exception {
-                    bootstrap.shutdown();
-                    return null;
-                }
-            });
-        }
-        // CHECKSTYLE:SKIP
-        catch (Exception exc) {
-            throw new Ops4jException(exc);
-        }
-    }
-
-    @Override
-    public Event<Object> getEvent() {
-        return getInstanceManager().getEvent();
-    }
-
-    @Override
-    public BeanManager getBeanManager() {
-        return manager;
-    }
-
-    @Override
-    public Instance<Object> getInstance() {
-        return getInstanceManager().getInstance();
-    }
-
-    private InstanceManager getInstanceManager() {
-        if (instanceManager == null) {
-            BeanManager beanManager = getBeanManager();
-            instanceManager = new InstanceManager();
-            AnnotatedType<InstanceManager> annotatedType = beanManager
-                .createAnnotatedType(InstanceManager.class);
-            InjectionTarget<InstanceManager> target = beanManager
-                .createInjectionTarget(annotatedType);
-            CreationalContext<InstanceManager> cc = beanManager.createCreationalContext(null);
-            target.inject(instanceManager, cc);
-        }
-        return instanceManager;
+    protected void shutdown() {
+        bootstrap.shutdown();
     }
 
     @Override
     public <T> T unwrap(Class<T> wrappedClass) {
         if (wrappedClass.isAssignableFrom(WeldBootstrap.class)) {
             return wrappedClass.cast(bootstrap);
+        } else {
+            return super.unwrap(wrappedClass);
         }
-        if (wrappedClass.isAssignableFrom(BeanManagerImpl.class)) {
-            return wrappedClass.cast(manager);
-        }
-        return null;
     }
 
-    @Override
-    public void startContext(Class<? extends Annotation> scope) {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
-
-    @Override
-    public void stopContext(Class<? extends Annotation> scope) {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
 }
