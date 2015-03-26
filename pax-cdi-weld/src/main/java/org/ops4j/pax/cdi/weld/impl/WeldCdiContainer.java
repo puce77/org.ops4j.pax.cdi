@@ -26,7 +26,7 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.ops4j.pax.cdi.weld.core.AbstractWeldCdiContainer;
-import org.ops4j.pax.cdi.weld.impl.bda.BundleDeployment;
+import org.ops4j.pax.cdi.weld.core.bda.BundleDeployment;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;

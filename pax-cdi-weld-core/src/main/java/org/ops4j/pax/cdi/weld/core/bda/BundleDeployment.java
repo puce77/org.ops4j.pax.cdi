@@ -15,13 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.weld.impl.bda;
+package org.ops4j.pax.cdi.weld.core.bda;
 
 import java.util.Collections;
 import java.util.List;
-
 import javax.enterprise.inject.spi.Extension;
-
 import org.jboss.weld.bootstrap.api.Bootstrap;
 import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
@@ -31,7 +29,9 @@ import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.ops4j.pax.cdi.spi.scan.BeanScanner;
-import org.ops4j.pax.cdi.weld.impl.OsgiProxyService;
+import org.ops4j.pax.cdi.weld.core.bda.impl.BundleBeanDeploymentArchive;
+import org.ops4j.pax.cdi.weld.core.bda.impl.ClassLoaderResourceLoader;
+import org.ops4j.pax.cdi.weld.core.bda.impl.OsgiProxyService;
 import org.osgi.framework.Bundle;
 
 public class BundleDeployment implements Deployment {

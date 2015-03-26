@@ -18,18 +18,10 @@
 package org.ops4j.pax.cdi.weld.se.impl;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.jboss.weld.bootstrap.api.SingletonProvider;
-import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
-import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
+import org.ops4j.pax.cdi.weld.core.AbstractWeldCdiContainerFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -39,73 +31,41 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link CdiContainerFactory} implementation based on Weld.
+ * {@link CdiContainerFactory} implementation based on Weld SE.
  *
- * @author Harald Wellmann
+ * @author Florian Brunner
  *
  */
 @Component
-public class WeldSECdiContainerFactory implements CdiContainerFactory {
+public class WeldSECdiContainerFactory extends AbstractWeldCdiContainerFactory implements CdiContainerFactory {
+    private final Logger log = LoggerFactory.getLogger(WeldSECdiContainerFactory.class);
 
-    private Logger log = LoggerFactory.getLogger(WeldSECdiContainerFactory.class);
-
-    private Map<Long, CdiContainer> containers = new HashMap<Long, CdiContainer>();
-    private List<CdiContainerListener> listeners = new CopyOnWriteArrayList<CdiContainerListener>();
     private BundleContext bundleContext;
 
     @Activate    
     public void activate(BundleContext bc) {
         this.bundleContext = bc;
-        SingletonProvider.initialize(new RegistrySingletonProvider());
+//        SingletonProvider.initialize(new RegistrySingletonProvider());
     }
 
     @Deactivate
     public void deactivate() {
-        SingletonProvider.reset();
+//        SingletonProvider.reset();
     }
 
     @Override
     public String getProviderName() {
-        return "Weld";
+        return "Weld SE";
     }
 
     @Override
     public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions, CdiContainerType containerType) {
-        WeldCdiContainer container = new WeldCdiContainer(containerType, bundleContext.getBundle(), bundle, extensions);
-        containers.put(bundle.getBundleId(), container);
-        for (CdiContainerListener listener : listeners) {
-            listener.postCreate(container);
-        }
-        log.debug("Weld Container created");
+        WeldSECdiContainer container = new WeldSECdiContainer(containerType, bundleContext.getBundle(), bundle,
+                extensions);
+        registerContainer(bundle, container);
+        log.debug("Weld SE Container created");
         return container;
     }
 
-    @Override
-    public CdiContainer getContainer(Bundle bundle) {
-        return containers.get(bundle.getBundleId());
-    }
-
-    @Override
-    public Collection<CdiContainer> getContainers() {
-        return Collections.unmodifiableCollection(containers.values());
-    }
-
-    @Override
-    public void removeContainer(Bundle bundle) {
-        CdiContainer container = containers.remove(bundle.getBundleId());
-        for (CdiContainerListener listener : listeners) {
-            listener.preDestroy(container);
-        }
-    }
-
-    @Override
-    public void addListener(CdiContainerListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(CdiContainerListener listener) {
-        listeners.remove(listener);
-    }
 
 }

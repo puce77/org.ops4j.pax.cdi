@@ -18,18 +18,12 @@
 package org.ops4j.pax.cdi.weld.impl;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.jboss.weld.bootstrap.api.SingletonProvider;
 import org.jboss.weld.bootstrap.api.helpers.RegistrySingletonProvider;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerFactory;
-import org.ops4j.pax.cdi.spi.CdiContainerListener;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
+import org.ops4j.pax.cdi.weld.core.AbstractWeldCdiContainerFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -45,12 +39,10 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Component
-public class WeldCdiContainerFactory implements CdiContainerFactory {
+public class WeldCdiContainerFactory extends AbstractWeldCdiContainerFactory implements CdiContainerFactory {
 
-    private Logger log = LoggerFactory.getLogger(WeldCdiContainerFactory.class);
+    private final Logger log = LoggerFactory.getLogger(WeldCdiContainerFactory.class);
 
-    private Map<Long, CdiContainer> containers = new HashMap<Long, CdiContainer>();
-    private List<CdiContainerListener> listeners = new CopyOnWriteArrayList<CdiContainerListener>();
     private BundleContext bundleContext;
 
     @Activate    
@@ -72,40 +64,11 @@ public class WeldCdiContainerFactory implements CdiContainerFactory {
     @Override
     public CdiContainer createContainer(Bundle bundle, Collection<Bundle> extensions, CdiContainerType containerType) {
         WeldCdiContainer container = new WeldCdiContainer(containerType, bundleContext.getBundle(), bundle, extensions);
-        containers.put(bundle.getBundleId(), container);
-        for (CdiContainerListener listener : listeners) {
-            listener.postCreate(container);
-        }
+        registerContainer(bundle, container);
         log.debug("Weld Container created");
         return container;
     }
 
-    @Override
-    public CdiContainer getContainer(Bundle bundle) {
-        return containers.get(bundle.getBundleId());
-    }
-
-    @Override
-    public Collection<CdiContainer> getContainers() {
-        return Collections.unmodifiableCollection(containers.values());
-    }
-
-    @Override
-    public void removeContainer(Bundle bundle) {
-        CdiContainer container = containers.remove(bundle.getBundleId());
-        for (CdiContainerListener listener : listeners) {
-            listener.preDestroy(container);
-        }
-    }
-
-    @Override
-    public void addListener(CdiContainerListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(CdiContainerListener listener) {
-        listeners.remove(listener);
-    }
+   
 
 }

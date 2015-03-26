@@ -17,7 +17,7 @@
  * 
  * Copied from Weld, where this class is not exported.
  */
-package org.ops4j.pax.cdi.weld.impl.bda;
+package org.ops4j.pax.cdi.weld.core.bda.impl;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,7 +25,6 @@ import java.util.Collection;
 
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
-import org.ops4j.pax.cdi.weld.impl.EnumerationList;
 
 /**
  * General {@link ResourceLoader} implementation that delegates resource loading to

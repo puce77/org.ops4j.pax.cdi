@@ -20,13 +20,11 @@ package org.ops4j.pax.cdi.weld.se.impl;
 import java.util.Arrays;
 import java.util.Collection;
 import javax.enterprise.inject.spi.BeanManager;
-import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.ops4j.pax.cdi.spi.CdiContainer;
 import org.ops4j.pax.cdi.spi.CdiContainerType;
 import org.ops4j.pax.cdi.weld.core.AbstractWeldCdiContainer;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +38,7 @@ public class WeldSECdiContainer extends AbstractWeldCdiContainer {
 
     private final Logger log = LoggerFactory.getLogger(WeldSECdiContainer.class);
 
-    private Weld weld;
+    private OsgiWeld weld;
 
     /**
      * Construct a CDI container for the given extended bundle.
@@ -51,14 +49,14 @@ public class WeldSECdiContainer extends AbstractWeldCdiContainer {
      */
     public WeldSECdiContainer(CdiContainerType containerType, Bundle ownBundle, Bundle bundle,
             Collection<Bundle> extensionBundles) {
-        super(containerType, bundle, extensionBundles, Arrays.asList(ownBundle,
-                FrameworkUtil.getBundle(Weld.class)));
+        super(containerType, bundle, extensionBundles, Arrays.asList(ownBundle));
+//                FrameworkUtil.getBundle(Weld.class)));
         log.debug("creating Weld SE CDI container for bundle {}", bundle);
     }
 
     @Override
     protected BeanManager createBeanManager(String contextId) {
-        weld = new Weld(contextId);
+        weld = new OsgiWeld(contextId, getBundle(), getContextClassLoader());
         WeldContainer weldContainer = weld.initialize();
         return weldContainer.getBeanManager();
     }
@@ -70,7 +68,7 @@ public class WeldSECdiContainer extends AbstractWeldCdiContainer {
 
     @Override
     public <T> T unwrap(Class<T> wrappedClass) {
-        if (wrappedClass.isAssignableFrom(Weld.class)) {
+        if (wrappedClass.isAssignableFrom(OsgiWeld.class)) {
             return wrappedClass.cast(weld);
         } else {
             return super.unwrap(wrappedClass);

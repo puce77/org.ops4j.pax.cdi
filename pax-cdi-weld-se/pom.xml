@@ -29,7 +29,6 @@
             <groupId>org.ops4j.pax.cdi</groupId>
             <artifactId>pax-cdi-weld-core</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
                 
         <dependency>
@@ -59,7 +58,6 @@
             <artifactId>org.osgi.core</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!--
         
         <dependency>
             <groupId>org.osgi</groupId>
@@ -67,7 +65,7 @@
             <scope>provided</scope>
         </dependency>
 
-        -->        
+                
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
@@ -79,7 +77,6 @@
             <artifactId>geronimo-atinject_1.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>-->
-        
     </dependencies>
 
     <build>

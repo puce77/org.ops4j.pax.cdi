@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.pax.cdi.weld.impl;
+package org.ops4j.pax.cdi.weld.core.bda.impl;
 
 import java.util.ArrayList;
 import java.util.Enumeration;

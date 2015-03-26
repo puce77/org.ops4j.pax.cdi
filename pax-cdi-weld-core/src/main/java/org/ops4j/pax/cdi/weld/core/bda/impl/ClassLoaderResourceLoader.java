@@ -17,7 +17,7 @@
  * 
  * Copied from Weld, where this class is not exported.
  */
-package org.ops4j.pax.cdi.weld.impl.bda;
+package org.ops4j.pax.cdi.weld.core.bda.impl;
 
 
 
